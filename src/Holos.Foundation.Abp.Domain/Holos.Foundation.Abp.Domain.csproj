@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Holos.Foundation.Abp.Domain</RootNamespace>
+    <Description>Interfaces de dominio sin dependencias: entidades con compañía y entradas que piden una compañía.</Description>
+  </PropertyGroup>
+
+</Project>

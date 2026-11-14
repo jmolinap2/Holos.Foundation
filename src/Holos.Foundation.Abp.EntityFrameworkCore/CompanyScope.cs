@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Holos.Foundation.Abp.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -87,6 +88,23 @@ public static class CompanyScope
         {
             throw new InvalidOperationException(
                 $"{entity.GetType().Name}.CompanyId={assigned} no coincide con la compañía activa ({current}).");
+        }
+    }
+
+    /// <summary>
+    /// Al modificar: la compañía de una fila no se cambia. Con el filtro activo, mover una fila a otra compañía
+    /// (por ejemplo por un DTO que trae otro <c>CompanyId</c>) se rechaza.
+    /// </summary>
+    public static void ApplyOnModified(ICompanyFilterContext context, EntityEntry entry)
+    {
+        if (!context.IsCompanyFilterEnabled || (entry.Entity is not IMustHaveCompany && entry.Entity is not IMayHaveCompany))
+            return;
+
+        var property = entry.Property(CompanyIdProperty);
+        if (property.IsModified && !Equals(property.OriginalValue, property.CurrentValue))
+        {
+            throw new InvalidOperationException(
+                $"{entry.Entity.GetType().Name}.CompanyId no puede cambiarse ({property.OriginalValue} → {property.CurrentValue}).");
         }
     }
 

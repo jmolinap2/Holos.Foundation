@@ -5,3 +5,4 @@ obj/
 *.nupkg
 TestResults/
 .vscode/settings.json
+nupkg/

@@ -6,5 +6,6 @@ namespace Holos.Foundation.Abp.Application;
 /// </summary>
 public interface ICompanyAccessGuard
 {
-    Task EnsureActiveCompanyAccessAsync();
+    /// <param name="requestedCompanyId">Compañía que pide la entrada, si pide alguna; si no coincide con la activa se rechaza.</param>
+    Task EnsureActiveCompanyAccessAsync(long? requestedCompanyId = null);
 }

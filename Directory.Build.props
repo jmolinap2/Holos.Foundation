@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Authors>Jesús Alejandro Molina Peñaherrera</Authors>
+    <RepositoryUrl>https://github.com/jmolinap2/Holos.Foundation</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/jmolinap2/Holos.Foundation</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>aspnetboilerplate;abp;multi-company;ef-core</PackageTags>
+    <IncludeSymbols>false</IncludeSymbols>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

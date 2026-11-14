@@ -1,3 +1,4 @@
+using Holos.Foundation.Abp.Domain;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -87,6 +88,35 @@ public class CompanyScopeTests : IDisposable
     }
 
     [Fact]
+    public void Moving_a_row_to_another_company_is_rejected_while_the_filter_is_enabled()
+    {
+        using var db = NewContext(true, 1);
+        var invoice = db.Invoices.First();
+        db.Entry(invoice).Property(x => x.CompanyId).CurrentValue = 2;
+        Assert.Throws<InvalidOperationException>(() => db.SaveChanges());
+    }
+
+    [Fact]
+    public void Editing_other_fields_of_a_row_is_allowed()
+    {
+        using var db = NewContext(true, 1);
+        var invoice = db.Invoices.First();
+        db.Entry(invoice).Property(x => x.Number).CurrentValue = "A-9";
+        db.SaveChanges();
+        Assert.Equal(1, db.Invoices.Count(x => x.Number == "A-9"));
+    }
+
+    [Fact]
+    public void Moving_a_row_to_another_company_is_allowed_when_the_filter_is_disabled()
+    {
+        using var db = NewContext(false, 1);
+        var invoice = db.Invoices.First(x => x.CompanyId == 1);
+        db.Entry(invoice).Property(x => x.CompanyId).CurrentValue = 2;
+        db.SaveChanges();
+        Assert.Equal(2, db.Invoices.Count(x => x.CompanyId == 2));
+    }
+
+    [Fact]
     public void Insert_for_another_company_is_allowed_when_the_filter_is_disabled()
     {
         using var db = NewContext(false, 1);
@@ -145,6 +175,8 @@ public class ScopedContext : DbContext, ICompanyFilterContext
     {
         foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList())
             CompanyScope.ApplyOnAdded(this, entry);
+        foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Modified).ToList())
+            CompanyScope.ApplyOnModified(this, entry);
         return base.SaveChanges();
     }
 }
