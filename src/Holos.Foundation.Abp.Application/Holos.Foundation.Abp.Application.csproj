@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Holos.Foundation.Abp.Application</RootNamespace>
+    <Description>Clases base de servicios de aplicación para ASP.NET Boilerplate: CRUD con compañía activa implícita.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="10.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Holos.Foundation.Abp.EntityFrameworkCore\Holos.Foundation.Abp.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>
