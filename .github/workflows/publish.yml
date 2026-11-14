@@ -1,7 +1,10 @@
 name: Publicar paquetes en nuget.org
 
 # Se publica al subir una etiqueta v<versión>, p. ej.: git tag v0.1.0 && git push origin v0.1.0
-# Requiere el secreto NUGET_API_KEY (permiso push, glob Holos.Foundation.*).
+# Autenticación: Trusted Publishing de nuget.org (sin clave almacenada).
+# Configuración única en nuget.org -> Trusted Publishing -> Create:
+#   Repository Owner: jmolinap2   Repository: Holos.Foundation   Workflow File: publish.yml   Environment: (vacío)
+# y la variable de repositorio NUGET_USER con el nombre de usuario de nuget.org dueño de la política.
 on:
   push:
     tags: ['v*']
@@ -9,6 +12,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v5
@@ -18,9 +24,10 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
       - run: dotnet test --nologo
       - run: dotnet pack -c Release -p:Version="$VERSION" -o nupkg --nologo
+      - name: Login en NuGet (Trusted Publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER }}
       - name: Publicar
-        env:
-          KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          test -n "$KEY" || { echo "::error::Falta NUGET_API_KEY"; exit 1; }
-          dotnet nuget push "nupkg/*.nupkg" --api-key "$KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push "nupkg/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
