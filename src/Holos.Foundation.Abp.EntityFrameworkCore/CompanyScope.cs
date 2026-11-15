@@ -13,7 +13,7 @@ namespace Holos.Foundation.Abp.EntityFrameworkCore;
 public static class CompanyScope
 {
     /// <summary>Nombre del filtro de datos de ABP (<c>RegisterFilter</c> / <c>DisableFilter</c>).</summary>
-    public const string FilterName = "CompanyScope";
+    public const string FilterName = CompanyFilter.Name;
 
     private const string CompanyIdProperty = nameof(IMustHaveCompany.CompanyId);
 

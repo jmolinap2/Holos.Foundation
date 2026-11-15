@@ -18,7 +18,7 @@ Es una librería nueva, no un fork de ABP: se apoya en los puntos de extensión 
 1. Registrar el filtro en `PreInitialize` del módulo: `Configuration.UnitOfWork.RegisterCompanyFilter();`
 2. En el `DbContext`, implementar `ICompanyFilterContext` y delegar tres métodos en `CompanyScope`.
    Ejemplo compilado: `test/.../AbpIntegrationExample.cs`.
-3. Procesos sin compañía (jobs, seeders, host): `using (uow.Current.DisableFilter(CompanyScope.FilterName)) { ... }`.
+3. Procesos sin compañía (jobs, seeders, host): `using (uow.Current.DisableFilter(CompanyFilter.Name)) { ... }`.
 
 ### Estado
 
