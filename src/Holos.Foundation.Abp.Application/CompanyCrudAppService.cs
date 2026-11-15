@@ -22,8 +22,8 @@ public abstract class CompanyCrudAppService<TEntity, TEntityDto, TPrimaryKey, TG
     {
     }
 
-    /// <summary>Inyección por propiedad (ABP). Sin implementación registrada no se valida acceso.</summary>
-    public ICompanyAccessGuard CompanyAccess { get; set; } = NullCompanyAccessGuard.Instance;
+    /// <summary>Inyección por propiedad (ABP). Requiere registrar un guard de acceso en la aplicación.</summary>
+    public ICompanyAccessGuard CompanyAccess { get; set; } = MissingCompanyAccessGuard.Instance;
 
     public override async Task<PagedResultDto<TEntityDto>> GetAllAsync(TGetAllInput input)
     {
@@ -67,10 +67,10 @@ public abstract class CompanyCrudAppService<TEntity, TEntityDto, TPrimaryKey, TG
     /// <summary>Error cuando la fila no existe o es de otra compañía. Por defecto, el de ABP (404).</summary>
     protected virtual Exception EntityNotFound(TPrimaryKey id) => new EntityNotFoundException(typeof(TEntity), id);
 
-    private sealed class NullCompanyAccessGuard : ICompanyAccessGuard
+    private sealed class MissingCompanyAccessGuard : ICompanyAccessGuard
     {
-        public static readonly NullCompanyAccessGuard Instance = new();
+        public static readonly MissingCompanyAccessGuard Instance = new();
 
-        public Task EnsureActiveCompanyAccessAsync(long? requestedCompanyId = null) => Task.CompletedTask;
+        public Task EnsureActiveCompanyAccessAsync(long? requestedCompanyId = null) => throw new InvalidOperationException("Register an ICompanyAccessGuard before using company CRUD services.");
     }
 }
