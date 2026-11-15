@@ -22,6 +22,53 @@ public class CompanyCrudAppServiceTests
         Assert.Equal(42L, guard.RequestedCompanyId);
     }
 
+    [Fact]
+    public async Task Loading_uses_the_overridden_loader_after_authorizing_company()
+    {
+        var guard = new RecordingGuard();
+        var service = new LoadingService(guard);
+        var entity = await service.LoadAsync(42);
+        Assert.True(guard.Called);
+        Assert.Equal(42, entity.Id);
+    }
+
+    [Fact]
+    public async Task Loading_converts_not_found_from_the_overridden_loader()
+    {
+        var service = new LoadingService(new RecordingGuard(), missing: true);
+        var error = await Assert.ThrowsAsync<EntityNotFoundException>(() => service.LoadAsync(42));
+        Assert.Equal(typeof(TestEntity), error.EntityType);
+    }
+
+    [Fact]
+    public async Task Loading_does_not_reach_the_loader_when_company_access_is_denied()
+    {
+        var service = new TestService(new RejectingGuard());
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.LoadAsync(42));
+    }
+
+    private sealed class RecordingGuard : ICompanyAccessGuard
+    {
+        public bool Called { get; private set; }
+        public Task EnsureActiveCompanyAccessAsync(long? requestedCompanyId = null)
+        {
+            Called = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class LoadingService(RecordingGuard guard, bool missing = false)
+        : CompanyCrudAppService<TestEntity, TestDto, long, PagedResultRequestDto, TestDto, TestDto>(null!, guard)
+    {
+        public Task<TestEntity> LoadAsync(long id) => GetEntityByIdAsync(id);
+        protected override Task<TestEntity> LoadEntityAsync(long id)
+        {
+            Assert.True(guard.Called);
+            if (missing) throw new EntityNotFoundException(typeof(TestEntity), id);
+            return Task.FromResult(new TestEntity { Id = id });
+        }
+    }
+
     private sealed class RejectingGuard : ICompanyAccessGuard
     {
         public long? RequestedCompanyId { get; private set; }

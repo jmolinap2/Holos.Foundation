@@ -59,13 +59,16 @@ public abstract class CompanyCrudAppService<TEntity, TEntityDto, TPrimaryKey, TG
         await CompanyAccess.EnsureActiveCompanyAccessAsync();
         try
         {
-            return await base.GetEntityByIdAsync(id);
+            return await LoadEntityAsync(id);
         }
         catch (EntityNotFoundException)
         {
             throw EntityNotFound(id);
         }
     }
+
+    /// <summary>Carga la entidad tras validar el acceso; permite incluir relaciones necesarias para el CRUD.</summary>
+    protected virtual Task<TEntity> LoadEntityAsync(TPrimaryKey id) => base.GetEntityByIdAsync(id);
 
     /// <summary>Error cuando la fila no existe o es de otra compañía. Por defecto, el de ABP (404).</summary>
     protected virtual Exception EntityNotFound(TPrimaryKey id) => new EntityNotFoundException(typeof(TEntity), id);
