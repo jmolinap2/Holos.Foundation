@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Jesús Alejandro Molina Peñaherrera</Authors>
     <RepositoryUrl>https://github.com/jmolinap2/Holos.Foundation</RepositoryUrl>
     <PackageProjectUrl>https://github.com/jmolinap2/Holos.Foundation</PackageProjectUrl>
