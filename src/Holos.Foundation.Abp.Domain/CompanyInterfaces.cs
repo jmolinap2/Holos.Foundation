@@ -20,3 +20,9 @@ public interface IRequestsCompany
 {
     long? RequestedCompanyId { get; }
 }
+
+/// <summary>Entidad o entrada con un código de negocio (único dentro de la compañía).</summary>
+public interface IHasCode
+{
+    string Code { get; }
+}

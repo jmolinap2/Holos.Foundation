@@ -1,6 +1,8 @@
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
+using Abp.Timing;
 using Abp.Domain.Repositories;
 using Holos.Foundation.Abp.Domain;
 
@@ -65,6 +67,21 @@ public abstract class CompanyCrudAppService<TEntity, TEntityDto, TPrimaryKey, TG
         {
             throw EntityNotFound(id);
         }
+    }
+
+    /// <summary>
+    /// Al editar, la creación (quién y cuándo) no la decide la entrada: si el DTO no la trae, el mapeo la dejaba en nulo.
+    /// </summary>
+    protected override void MapToEntity(TUpdateInput updateInput, TEntity entity)
+    {
+        var creator = (entity as ICreationAudited)?.CreatorUserId;
+        var createdAt = (entity as IHasCreationTime)?.CreationTime;
+        base.MapToEntity(updateInput, entity);
+
+        if (entity is ICreationAudited audited && audited.CreatorUserId != creator)
+            audited.CreatorUserId = creator;
+        if (entity is IHasCreationTime timed && createdAt.HasValue && timed.CreationTime != createdAt.Value)
+            timed.CreationTime = createdAt.Value;
     }
 
     /// <summary>Carga la entidad tras validar el acceso; permite incluir relaciones necesarias para el CRUD.</summary>
