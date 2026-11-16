@@ -5,7 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Holos.Foundation.Abp.Domain</RootNamespace>
-    <Description>Interfaces de dominio sin dependencias: entidades con compañía y entradas que piden una compañía.</Description>
+    <Description>Contratos de dominio para ASP.NET Boilerplate: entidades con compañía, entradas que piden una compañía y excepciones de negocio localizables.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="10.3.0" />
+  </ItemGroup>
 
 </Project>

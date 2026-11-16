@@ -26,3 +26,10 @@ public interface IHasCode
 {
     string Code { get; }
 }
+
+/// <summary>Una excepción de negocio que se expresa con una clave de localización y no con un texto fijo.</summary>
+public interface ILocalizableException
+{
+    string LocalizationKey { get; }
+    object[] LocalizationArguments { get; }
+}

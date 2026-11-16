@@ -15,3 +15,20 @@ public static class UnitOfWorkCompanyFilterExtensions
         return unitOfWork.DisableFilter(CompanyFilter.Name);
     }
 }
+
+public static class CompanyQueryExtensions
+{
+    /// <summary>
+    /// Acota una consulta a compañías concretas. Úsala siempre junto a <see cref="UnitOfWorkCompanyFilterExtensions.DisableCompanyFilter"/>:
+    /// al apagar el filtro global, este predicado explícito es lo único que impide ver filas de otras compañías.
+    /// Una lista vacía no devuelve filas (falla cerrado).
+    /// </summary>
+    public static IQueryable<TEntity> ForCompanies<TEntity>(this IQueryable<TEntity> query, IEnumerable<long> companyIds)
+        where TEntity : IMustHaveCompany
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(companyIds);
+        var ids = companyIds.Distinct().ToArray();
+        return query.Where(x => ids.Contains(x.CompanyId));
+    }
+}

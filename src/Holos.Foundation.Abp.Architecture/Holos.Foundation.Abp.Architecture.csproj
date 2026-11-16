@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Holos.Foundation.Abp.Architecture</RootNamespace>
+    <Description>Guardas de arquitectura para proyectos de prueba: entidades con compañía sin DbSet, mensajes con texto fijo y paridad de diccionarios de localización. Devuelven la lista de infractores; no dependen de ningún framework de pruebas.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Holos.Foundation.Abp.Domain\Holos.Foundation.Abp.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
