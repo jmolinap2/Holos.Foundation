@@ -16,7 +16,7 @@ public interface ICurrentCompany
 }
 
 /// <summary>
-/// Cómo un <c>DbContext</c> de ABP usa la librería: tres métodos delegados y dos propiedades.
+/// Cómo un <c>DbContext</c> de ABP usa la librería: filtros, conceptos de escritura y dos propiedades.
 /// No se ejecuta (AbpDbContext necesita la infraestructura de ABP); su compilación confirma las firmas de ABP 10.3.
 /// </summary>
 public class ExampleAbpDbContext : AbpDbContext, ICompanyFilterContext
@@ -40,6 +40,12 @@ public class ExampleAbpDbContext : AbpDbContext, ICompanyFilterContext
     {
         base.ApplyAbpConceptsForAddedEntity(entry, userId, changeReport);
         CompanyScope.ApplyOnAdded(this, entry);
+    }
+
+    protected override void ApplyAbpConceptsForModifiedEntity(EntityEntry entry, long? userId, EntityChangeReport changeReport)
+    {
+        base.ApplyAbpConceptsForModifiedEntity(entry, userId, changeReport);
+        CompanyScope.ApplyOnModified(this, entry);
     }
 }
 

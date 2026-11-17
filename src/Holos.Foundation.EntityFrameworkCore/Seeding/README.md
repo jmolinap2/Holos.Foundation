@@ -26,3 +26,29 @@ immutable: payloads must be frozen in product-owned versioned resources with cha
 tests. Legacy data adoption is a product policy, not something Foundation can infer from counts.
 
 No production application adapter is included here yet. No package was published by this work.
+
+## Usage sequence
+
+1. Define the scope and frozen version payloads in the product. Keep identifiers stable.
+2. Implement the store using the product's existing journal. For a standalone relational job,
+   derive from `RelationalVersionedSeedStore<TScope, TContext>` and implement its three hooks:
+   scope lock, journal lookup, and journal insertion. Supply a factory for the correct database.
+3. Register steps in their intended order and run them. For example, using product-defined
+   `CatalogScope`, `CatalogContext`, and `AddWalletRelease`:
+
+```csharp
+var runner = new VersionedSeedRunner<CatalogScope, CatalogContext>(store,
+    new[] { new VersionedSeed<CatalogContext>("20261117_AddWallet", AddWalletRelease.ApplyAsync) });
+await runner.RunAsync(scope, cancellationToken);
+```
+
+`AddWalletRelease` must stage only its intended additions; do not call a full synchronization
+routine that overwrites user-owned fields. The generic runner cannot infer that policy from a delegate.
+
+4. Test the actual adapter with two independent connections and injected failures before and
+   after saving. Re-read with a fresh context. Verify the journal and data together.
+
+Executable examples are in
+[RelationalVersionedSeedStoreTests](../../../test/Holos.Foundation.EntityFrameworkCore.Tests/RelationalVersionedSeedStoreTests.cs)
+and [VersionedSeedRunnerTests](../../../test/Holos.Foundation.EntityFrameworkCore.Tests/VersionedSeedRunnerTests.cs).
+The SQLite test adapter intentionally is not a PostgreSQL adapter or a provisioning adapter.
