@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Holos.Foundation.Domain</RootNamespace>
+    <Description>Contratos de dominio para ASP.NET Boilerplate: entidades con compañía, entradas que piden una compañía y excepciones de negocio localizables.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>

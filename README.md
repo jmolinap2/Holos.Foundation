@@ -4,7 +4,7 @@ Piezas reutilizables para aplicaciones sobre ASP.NET Boilerplate (`Abp.*`) que q
 
 Es una librería nueva, no un fork de ABP: se apoya en los puntos de extensión que ABP ya expone.
 
-## Holos.Foundation.Abp.EntityFrameworkCore
+## Holos.Foundation.EntityFrameworkCore
 
 **Compañía activa implícita**, igual que ABP hace con el inquilino.
 
